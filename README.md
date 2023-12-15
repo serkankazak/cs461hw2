@@ -1,6 +1,6 @@
 # cs461hw2
 
-http://bilkentcraps.github.io/cs461hw2
+https://serkankazak.github.io/cs461hw2/
 
 ##### determine every possibility, apply heuristic, remove previously visiteds:
 
