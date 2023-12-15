@@ -1,0 +1,78 @@
+<!DOCTYPE html><html><head>
+<script src="j.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.15.0/vis.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.15.0/vis.min.css" rel="stylesheet" type="text/css">
+<meta charset="utf-8"><title>CS461 HW2</title><style type="text/css">
+#tre {
+	width: 1100px;
+	height: 600px;
+	border: 1px solid lightgray;
+}
+</style></head><body><br>For speed at browser, scramble 30 times and cut off at 300 nodes.<br><br>
+<button id="but1" type="button">Gen</button>
+<button id="but2" type="button">Run1</button>
+<button id="but3" type="button">Run2</button>
+<button id="but4" type="button">Run3</button>
+<button id="but5" type="button">Run4</button>
+
+<br><br><form>
+<input type="radio" name="radioo" value="hf" checked> determine every possibility, apply heuristic, remove previously visiteds<br>
+<input type="radio" name="radioo" value="hs"> determine every possibility, remove previously visiteds, apply heuristic<br>
+</form><br><div id="res"></div><div id="tre"></div><script>
+
+var dd;
+var ee;
+
+function draw(phy) {
+	dd = [];
+	ee = [];
+	dd.push({id: 0, label: strChange(root.data)});
+	drawt(root, 0);
+	var tre = new vis.Network(document.getElementById("tre"), {nodes: new vis.DataSet(dd), edges: new vis.DataSet(ee)}, {layout: {hierarchical: {sortMethod: "directed", direction: "UD"}}, physics: phy});
+}
+
+function drawt(node, parent) {
+	for (var i = 0; i < node.children.length; i++) {
+		var colo = (node.children[i].data == 123456789) ? "red" : "yellow";
+		dd.push({id: node.children[i].id, label: strChange(node.children[i].data), color:colo});
+		ee.push({from: parent, to: node.children[i].id});
+		drawt(node.children[i], node.children[i].id);
+	}
+}
+
+$("#but1").click(function() {
+
+	node_id = 0;
+	root = new Node(123456789, null);
+
+	var cur = root;
+	for (var i = 0; i < 30; i++) {
+		var neww = new Node(shuf(possible(cur.data))[0], cur);
+		cur.children.push(neww);
+		cur = neww;
+	}
+
+	draw(0);
+	$("#res").html(strChange(cur.data).replace(/\n/g, "<br>") + "<br><br>");
+
+});
+
+function goo(w) {
+
+	if (solve1(gen(30), w, 300, ($('input[name=radioo]:checked', 'form').val() == "hf"))) {
+		$("#res").html("Solved: " + node_id + "<br><br>");
+	} else {
+		$("#res").html("No: " + node_id + "<br><br>");
+	};
+
+	draw(true);
+
+}
+
+$("#but2").click(function() { goo(1); });
+$("#but3").click(function() { goo(2); });
+$("#but4").click(function() { goo(3); });
+$("#but5").click(function() { goo(4); });
+
+</script></body></html>
